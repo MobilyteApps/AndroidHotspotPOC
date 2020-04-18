@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "471789802207",
+    "firebase_url": "https://android-mifi-hotspot.firebaseio.com",
+    "project_id": "android-mifi-hotspot",
+    "storage_bucket": "android-mifi-hotspot.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471789802207:android:82970eedf6c5be27e7cf6a",
+        "android_client_info": {
+          "package_name": "com.p.hotspotpoc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471789802207-1b9f9nh8cu9kpe0ifa1arvmen4cgh5ia.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.p.hotspotpoc",
+            "certificate_hash": "b0a4d947cf8e47c388ddf1d963fbb6910e9b819f"
+          }
+        },
+        {
+          "client_id": "471789802207-pij04308vpdhh8tov3ff62302tcckni7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK7uiE-r6UfDhlpgR1ENb6WHJ-UxQNBng"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471789802207-pij04308vpdhh8tov3ff62302tcckni7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
