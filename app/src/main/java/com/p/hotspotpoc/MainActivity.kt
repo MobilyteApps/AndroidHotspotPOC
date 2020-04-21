@@ -1,5 +1,7 @@
 package com.p.hotspotpoc
 
+import android.app.admin.DevicePolicyManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -16,16 +18,22 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private var mReservation: LocalOnlyHotspotReservation? = null
+    //////////////////////device admin ////////////
+    private var activeDevicePolicyManager: DevicePolicyManager? = null
+    private val LOG_TAG = "ActiveDevicePolicy"
+    var mDPM: DevicePolicyManager? = null
+    var mAdminName: ComponentName? = null
+    /////////////////////////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         var a = ApManager.isApOn(this) // check Ap state :boolean
-        Log.d("state",a.toString())
-
+        Log.d("state", a.toString())
         checkStatus()
         // Crashlytics.getInstance().crash()
-
-        ActivityCompat.requestPermissions(this,
+        makeDeviceOwner()
+        ActivityCompat.requestPermissions(
+            this,
             arrayOf(
                 android.Manifest.permission.ACCESS_COARSE_LOCATION,
                 android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -37,17 +45,46 @@ class MainActivity : AppCompatActivity() {
         )
 
         btnOn.setOnClickListener {
+
             checkLocation()
 
         }
+
         btnOff.setOnClickListener {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 ApManager.close()
-            }else {
+            } else {
                 ApManager.configApState(applicationContext)
             }
 
-            txtStatus.text="Hotspot is Off" }
+            txtStatus.text = "Hotspot is Off"
+        }
+    }
+
+    private fun makeDeviceOwner() {
+        mDPM =
+            getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+        mAdminName = ComponentName(this, DeviceAdminSample::class.java)
+        if (!mDPM!!.isAdminActive(mAdminName)) { // try to become active – must happen here in this activity, to get result
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
+            intent.putExtra(
+                DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                mAdminName
+            )
+            intent.putExtra(
+                DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                "Additional text explaining why this needs to be added."
+            )
+            startActivityForResult(intent, 123)
+        }
+//        try {
+//            Runtime.getRuntime()
+//                .exec("dpm set-device-owner com.p.hotspotpoc/.DeviceAdminSample")
+//        } catch (e: java.lang.Exception) {
+//            Log.e("FragmentActivity.TAG", "device owner not set")
+//            Log.e("FragmentActivity.TAG", e.toString())
+//            e.printStackTrace()
+//        }
     }
 
     private fun checkLocation() {
@@ -85,16 +122,18 @@ class MainActivity : AppCompatActivity() {
                 mReservation = ApManager.configApStateOreo(this)
             } else {
                 ApManager.configApState(applicationContext)
+
             }
             txtStatus.text = "Hotspot is On"
         }
     }
 
     private fun checkStatus() {
-        if(ApManager.isApOn(this)){
-            txtStatus.text="Hotspot is On"
-        }else{
-            txtStatus.text="Hotspot is Off"
+        if (ApManager.isApOn(this)) {
+            txtStatus.text = "Hotspot is On"
+        } else {
+            txtStatus.text = "Hotspot is Off"
         }
     }
+
 }
